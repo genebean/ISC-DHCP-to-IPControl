@@ -32,6 +32,8 @@ length($0) > 5 { total++
       hostname[total]=$(i+1)
       # Remove the trailing { that might be there
       gsub(/{/, "", hostname[total])
+      # Replace . with -
+      gsub(/\./,"-", hostname[total])
     }
  
     # if this field matches the word "hardware"
