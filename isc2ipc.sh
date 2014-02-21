@@ -20,7 +20,7 @@ BEGIN {RS="}"}
  
 # TODO: figure out how to skip comment lines without having to use sed first
  
-length($0) > 5 { total++
+length($0) > 18 { total++
  
   for(i=1;i<=NF;i++) {
  
@@ -54,15 +54,35 @@ length($0) > 5 { total++
       ip[total]=arr[1]
     }
   }
+
+  addressType[total] = "Manual DHCP"
+  deviceType[total] = "Unspecified"
+  hwType[total] = "ethernet"
+  resourceRecordFlag[total] = "FALSE"
+  domainName[total] = "westga.edu"
+  container[total] = ""
+  domainTyp[total] = "Default"
+  description[total] = ""
+  userDefinedFields[total] = ""
+  aliases[total] = ""
+  dupWarning[total] = ""
+  interfaces[total] = "Default"
+  excludeFromDiscovery[total] = "FALSE"
+  virtual[total] = "FALSE"
+  DUID[total] = ""
   
  
 }
  
-# for every entry we captured, display its appropriate info
-END { for(entry in counter) {
+END { 
+      # print the csv header
+      print "^ipaddress,addressType,hostname,deviceType,hwType,MACAddress,resourceRecordFlag,domainName,container,domainTyp,description,userDefinedFields,aliases,dupWarning,interfaces,excludeFromDiscovery,virtual,DUID"
+
+      # for every entry we captured, display its appropriate info
+      for(entry in counter) {
          if(type[entry] == "host") {
-             printf("%s,%s,%s,\n",\
-                 ip[entry],mac[entry],hostname[entry])
+             printf("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,\n",\
+                 ip[entry],addressType[entry],hostname[entry],deviceType[entry],hwType[entry],mac[entry],resourceRecordFlag[entry],domainName[entry],container[entry],domainTyp[entry],description[entry],userDefinedFields[entry],aliases[entry],dupWarning[entry],interfaces[entry],excludeFromDiscovery[entry],virtual[entry],DUID[entry])
          }
     }
 }
