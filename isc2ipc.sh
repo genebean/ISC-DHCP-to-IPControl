@@ -43,7 +43,7 @@ length($0) > 5 { total++
       mac[total]=arr[1]
     }
  
-    # if this field matches the word "hardware"
+    # if this field matches the word "fixed-address"
     else if($i ~ /^fixed-address$/) {
  
       # get rid of the trailing semi-colon
@@ -51,59 +51,6 @@ length($0) > 5 { total++
  
       ip[total]=arr[1]
     }
- 
-    # if this field matches the word "subnet"
-    else if($i ~ /^subnet$/) {
- 
-      type[total] = "subnet"
-      # get rid of the enclosing quotes
-      split($(i+1),arr,"\"")
- 
-      subnetip[total]=arr[1]
-    }
- 
-    # if this field matches the word "netmask"
-    else if($i ~ /^netmask$/) {
- 
-      subnetmask[total]=$(i+1)
-    }
- 
-    # if this field matches the word "range"
-    else if($i ~ /^range$/) {
-      total++
-      type[total] = "pool"
-      poolstart[total]=$(i+1)
-      # get rid of the trailing semi-colon
-      split($(i+2),arr,";")
-      poolend[total]=arr[1]
-    }
- 
-    # if this field matches the word "failover"
-    if($i ~ /^#failover$/) {
-      # get rid of the enclosing quotes
-      split($(i+2),arr,"\"")
- 
-      failover[total]=arr[2]
-    }
-  }
- 
- 
- 
-  # do a host command reverse lookup on the IP to try and find a dns name
-  if( length(ip[total]) > 0 ) {
-    command = ("host " ip[total])
-    command | getline tmpname
-    close(command)
-    split(tmpname,n,"pointer")
-    
-    # trim off leading spaces etc
-    gsub(/^[ \t]+/, "", n[2])
- 
-    name[total] = substr(n[2],0,length(n[2])-1)
-  }
- 
-  if( length(name[total]) == 0 ) {
-    name[total]="dhcpload-" ip[total]
   }
   
  
@@ -111,17 +58,9 @@ length($0) > 5 { total++
  
 # for every entry we captured, display its appropriate info
 END { for(entry in counter) {
-         if(type[entry] == "subnet") {
-             printf("%s,%s,%s,DHCPLOAD-%s\n",\
-                 type[entry],subnetip[entry],subnetmask[entry],subnetip[entry])
-         }
-         if(type[entry] == "pool") {
-             printf("%s,%s,%s,%s\n",\
-                 type[entry],poolstart[entry],poolend[entry],failover[entry])
-         }
          if(type[entry] == "host") {
-             printf("%s,%s,%s,%s,%s\n",\
-                 type[entry],ip[entry],mac[entry],name[entry],hostname[entry])
+             printf("%s,%s,%s,\n",\
+                 ip[entry],mac[entry],hostname[entry])
          }
     }
 }
