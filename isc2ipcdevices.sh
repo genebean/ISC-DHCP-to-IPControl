@@ -58,7 +58,7 @@ length($0) > 18 { total++
     deviceType[total] = "Unspecified"
     hwType[total] = "ethernet"
     resourceRecordFlag[total] = "FALSE"
-    domainName[total] = "westga.edu"
+    domainName[total] = ""
     container[total] = ""
     domainTyp[total] = "Default"
     description[total] = ""
