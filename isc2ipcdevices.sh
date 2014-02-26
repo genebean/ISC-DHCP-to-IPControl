@@ -32,6 +32,8 @@ length($0) > 18 { total++
       gsub(/{/, "", hostname[total])
       # Replace . with -
       gsub(/\./,"-", hostname[total])
+      # Replace _ with -
+      gsub(/_/,"-", hostname[total])
     }
  
     # if this field matches the word "hardware"
@@ -40,7 +42,7 @@ length($0) > 18 { total++
       # get rid of the trailing semi-colon
       split($(i+2),arr,";")
  
-      mac[total]=arr[1]
+      mac[total]=tolower(arr[1])
     }
  
     # if this field matches the word "fixed-address"
